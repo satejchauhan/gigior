@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Btn, Picture } from './Ui'
 import { api } from '../lib/api'
+import { useLenis } from '../lib/SmoothScroll'
 
 const SALON = [
   ['Hair', '/salon/hair', '/images/mega-hair.png', 'Cut, colour, treatments, styling.'],
@@ -24,6 +25,7 @@ export function Header({ nav }) {
   const [open, setOpen] = useState(false)
   const { pathname } = useLocation()
   const brand = nav?.brand || {}
+  const lenis = useLenis()
 
   useEffect(() => {
     const onScroll = () => setSlim(window.scrollY > 80)
@@ -36,8 +38,27 @@ export function Header({ nav }) {
     setOpen(false)
   }, [pathname])
 
+  useEffect(() => {
+    const onResize = () => {
+      if (window.matchMedia('(min-width: 1100px)').matches) setOpen(false)
+    }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : ''
+    if (open) lenis?.stop()
+    else lenis?.start()
+    return () => {
+      document.body.style.overflow = ''
+      lenis?.start()
+    }
+  }, [open, lenis])
+
   return (
-    <header className={`site-header ${slim ? 'is-slim' : ''}`}>
+    <>
+    <header className={`site-header ${slim ? 'is-slim' : ''} ${open ? 'is-open' : ''}`}>
       <div className="site-header__bar">
         <Link to="/" className="brand wordmark" aria-label="GIGIOR home">
           <strong>GIGIOR</strong>
@@ -55,14 +76,14 @@ export function Header({ nav }) {
 
         <div className="header-cta">
           <Btn to="/book" fill className="header-book-mobile">Reserve</Btn>
-          <button className="nav-toggle" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen((v) => !v)}>
+          <button className={`nav-toggle ${open ? 'is-open' : ''}`} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen((v) => !v)}>
             <span />
           </button>
         </div>
       </div>
-
+    </header>
       {open && (
-        <div className="nav-mobile" role="dialog" aria-label="Menu">
+        <div className="nav-mobile" role="dialog" aria-label="Menu" onClick={() => setOpen(false)}>
           <Link to="/salon">Salon</Link>
           {SALON.map(([label, to]) => <Link className="sub" key={to} to={to}>{label}</Link>)}
           <Link to="/aesthetics">Aesthetics</Link>
@@ -78,7 +99,7 @@ export function Header({ nav }) {
           <Link to="/book">Reserve</Link>
         </div>
       )}
-    </header>
+    </>
   )
 }
 
