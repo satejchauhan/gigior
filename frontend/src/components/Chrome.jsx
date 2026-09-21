@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Btn, Picture } from './Ui'
 import { api } from '../lib/api'
@@ -23,6 +24,7 @@ const AESTHETICS = [
 export function Header({ nav }) {
   const [slim, setSlim] = useState(false)
   const [open, setOpen] = useState(false)
+  const [expanded, setExpanded] = useState('salon')
   const { pathname } = useLocation()
   const brand = nav?.brand || {}
   const lenis = useLenis()
@@ -48,13 +50,25 @@ export function Header({ nav }) {
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
-    if (open) lenis?.stop()
-    else lenis?.start()
+    document.body.classList.toggle('nav-open', open)
+    if (open) {
+      lenis?.stop()
+      lenis?.scrollTo(0, { immediate: true })
+      window.scrollTo(0, 0)
+      setSlim(false)
+    } else {
+      lenis?.start()
+    }
     return () => {
       document.body.style.overflow = ''
+      document.body.classList.remove('nav-open')
       lenis?.start()
     }
   }, [open, lenis])
+
+  const toggleSection = (key) => {
+    setExpanded((current) => (current === key ? '' : key))
+  }
 
   return (
     <>
@@ -76,28 +90,71 @@ export function Header({ nav }) {
 
         <div className="header-cta">
           <Btn to="/book" fill className="header-book-mobile">Reserve</Btn>
-          <button className={`nav-toggle ${open ? 'is-open' : ''}`} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen((v) => !v)}>
-            <span />
+          <button
+            type="button"
+            className={`nav-toggle ${open ? 'is-open' : ''}`}
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+          >
+            <span className="nav-toggle__box" aria-hidden="true">
+              <i className="nav-toggle__line" />
+              <i className="nav-toggle__line" />
+              <i className="nav-toggle__line" />
+            </span>
           </button>
         </div>
       </div>
     </header>
-      {open && (
-        <div className="nav-mobile" role="dialog" aria-label="Menu" onClick={() => setOpen(false)}>
-          <Link to="/salon">Salon</Link>
-          {SALON.map(([label, to]) => <Link className="sub" key={to} to={to}>{label}</Link>)}
-          <Link to="/aesthetics">Aesthetics</Link>
-          {AESTHETICS.map(([label, to]) => <Link className="sub" key={to} to={to}>{label}</Link>)}
-          <Link to="/finder">Treatment finder</Link>
-          <Link to="/results">Results</Link>
-          <Link to="/about">About</Link>
-          <Link to="/membership">Membership</Link>
-          <Link to="/locations">Locations</Link>
-          <Link to="/journal">Journal</Link>
-          <Link to="/faq">FAQs</Link>
-          <Link to="/contact">Visit</Link>
-          <Link to="/book">Reserve</Link>
-        </div>
+      {open && createPortal(
+        <div className="nav-mobile" role="dialog" aria-modal="true" aria-label="Menu">
+          <div className="nav-mobile__scroll">
+            <p className="nav-mobile__intro">Salon · Aesthetic</p>
+
+            <div className={`nav-mobile__acc ${expanded === 'salon' ? 'is-open' : ''}`}>
+              <button type="button" className="nav-mobile__acc-btn" aria-expanded={expanded === 'salon'} onClick={() => toggleSection('salon')}>
+                <span>Salon</span>
+                <em aria-hidden="true" />
+              </button>
+              <div className="nav-mobile__acc-panel">
+                <Link to="/salon">Overview</Link>
+                {SALON.map(([label, to]) => (
+                  <Link key={to} to={to}>{label}</Link>
+                ))}
+              </div>
+            </div>
+
+            <div className={`nav-mobile__acc ${expanded === 'aesthetics' ? 'is-open' : ''}`}>
+              <button type="button" className="nav-mobile__acc-btn" aria-expanded={expanded === 'aesthetics'} onClick={() => toggleSection('aesthetics')}>
+                <span>Aesthetics</span>
+                <em aria-hidden="true" />
+              </button>
+              <div className="nav-mobile__acc-panel">
+                <Link to="/aesthetics">Overview</Link>
+                {AESTHETICS.map(([label, to]) => (
+                  <Link key={to} to={to}>{label}</Link>
+                ))}
+              </div>
+            </div>
+
+            <nav className="nav-mobile__primary" aria-label="More">
+              <Link to="/finder">Treatment finder</Link>
+              <Link to="/results">Results</Link>
+              <Link to="/about">About</Link>
+              <Link to="/membership">Membership</Link>
+              <Link to="/locations">Locations</Link>
+              <Link to="/journal">Journal</Link>
+              <Link to="/faq">FAQs</Link>
+              <Link to="/contact">Visit</Link>
+            </nav>
+          </div>
+
+          <div className="nav-mobile__bar">
+            <Btn to="/book" fill>Reserve</Btn>
+            <a className="nav-mobile__call" href={`tel:${(brand.phone || '+00000000000').replace(/\s+/g, '')}`}>Call</a>
+          </div>
+        </div>,
+        document.body,
       )}
     </>
   )
