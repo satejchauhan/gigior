@@ -27,10 +27,17 @@ Open [http://localhost:5173](http://localhost:5173). Vite proxies `/api` and `/a
 
 Change both in `backend/config.php` before any public host.
 
-## Performance
+## Deploy (Vercel)
 
-- Lenis smooth scroll (disabled when `prefers-reduced-motion`)
-- GPU transforms for reveals; no scroll-library animation on every block
-- Route-level code splitting
-- Responsive `srcset` images, hero preload, `font-display` via self-hosted Fontsource (two families, four files)
-- SQLite WAL, prepared statements, rate-limited posts
+Root `vercel.json` builds the Vite app from `frontend/` and publishes `frontend/dist`.
+
+Site images live only in `frontend/public/images` (copied into the build as `/images/...`).  
+`backend/public/images` is a symlink to that folder for local PHP.
+
+SPA routing only rewrites paths **without** a file extension, so `/images/*.png` is served as static files — not `index.html`.
+
+```bash
+npm run build
+```
+
+Confirm `frontend/dist/images/` exists before relying on a deploy.
