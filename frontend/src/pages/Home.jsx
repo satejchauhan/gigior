@@ -41,7 +41,6 @@ export default function Home() {
         <Picture
           src="/images/hero-home.png"
           alt="Sunlit hair in the GIGIOR rooms"
-          widths={[800, 1400, 2000]}
           sizes="100vw"
           eager
         />
@@ -54,7 +53,7 @@ export default function Home() {
             <Btn to="/book" fill light>Reserve</Btn>
             <Btn to="/finder" light>Explore treatments</Btn>
           </div>
-          <p className="eyebrow" style={{ marginTop: '1.4rem', opacity: 0.8 }}>
+          <p className="eyebrow hero__meta">
             {brand.years || '8'} years · {brand.locations_count || '1'} house · {brand.practitioners_count || '12'} practitioners
           </p>
         </div>
@@ -79,22 +78,22 @@ export default function Home() {
 
       <section className="split">
         <Link to="/salon">
-          <Picture src={data?.split?.salon?.image} alt="GIGIOR salon" sizes="50vw" />
+          <Picture src={data?.split?.salon?.image || '/images/split-salon.png'} alt="GIGIOR salon" sizes="50vw" />
           <div className="split__copy">
             <p className="eyebrow">Enter</p>
             <h2 className="display">Salon</h2>
-            <p>{data?.split?.salon?.line}</p>
-            <div className="chips">{(data?.split?.salon?.chips || []).map((c) => <span key={c}>{c}</span>)}</div>
+            <p>{data?.split?.salon?.line || 'Hair, styling, and beauty craft'}</p>
+            <div className="chips">{(data?.split?.salon?.chips || ['Cut', 'Colour', 'Bridal', 'Nails']).map((c) => <span key={c}>{c}</span>)}</div>
             <span className="btn btn--light">Explore salon</span>
           </div>
         </Link>
         <Link to="/aesthetics">
-          <Picture src={data?.split?.aesthetics?.image} alt="GIGIOR aesthetics" sizes="50vw" />
+          <Picture src={data?.split?.aesthetics?.image || '/images/split-aesthetics.png'} alt="GIGIOR aesthetics" sizes="50vw" />
           <div className="split__copy">
             <p className="eyebrow">Enter</p>
             <h2 className="display">Aesthetics</h2>
-            <p>{data?.split?.aesthetics?.line}</p>
-            <div className="chips">{(data?.split?.aesthetics?.chips || []).map((c) => <span key={c}>{c}</span>)}</div>
+            <p>{data?.split?.aesthetics?.line || 'Clinically-led skin and facial work'}</p>
+            <div className="chips">{(data?.split?.aesthetics?.chips || ['Skin', 'Injectables', 'Laser', 'Body']).map((c) => <span key={c}>{c}</span>)}</div>
             <span className="btn btn--light">Explore aesthetics</span>
           </div>
         </Link>

@@ -6,21 +6,26 @@ export function Reveal({ as: Tag = 'div', className = '', children, ...props }) 
   useEffect(() => {
     const el = ref.current
     if (!el) return undefined
+    const show = () => el.classList.add('is-in')
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      el.classList.add('is-in')
+      show()
       return undefined
     }
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          el.classList.add('is-in')
+          show()
           io.unobserve(el)
         }
       },
-      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
+      { threshold: 0.01, rootMargin: '120px 0px' },
     )
     io.observe(el)
-    return () => io.disconnect()
+    const failsafe = window.setTimeout(show, 900)
+    return () => {
+      io.disconnect()
+      window.clearTimeout(failsafe)
+    }
   }, [])
 
   return (

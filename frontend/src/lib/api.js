@@ -1,15 +1,24 @@
+import { fallback } from '../data/catalog'
+
 const API = '/api'
 
 async function request(path, options) {
-  const res = await fetch(`${API}${path}`, {
-    headers: { Accept: 'application/json', ...(options?.body ? { 'Content-Type': 'application/json' } : {}) },
-    ...options,
-  })
-  const json = await res.json().catch(() => ({}))
-  if (!res.ok || json.ok === false) {
-    throw new Error(json.error || 'Something did not send.')
+  try {
+    const res = await fetch(`${API}${path}`, {
+      headers: { Accept: 'application/json', ...(options?.body ? { 'Content-Type': 'application/json' } : {}) },
+      ...options,
+    })
+    const json = await res.json().catch(() => ({}))
+    if (!res.ok || json.ok === false) {
+      throw new Error(json.error || 'Something did not send.')
+    }
+    return json.data
+  } catch (err) {
+    if (options?.method && options.method !== 'GET') throw err
+    const data = fallback(path)
+    if (data !== undefined && data !== null) return data
+    throw err
   }
-  return json.data
 }
 
 export const api = {
@@ -31,9 +40,6 @@ export const api = {
   subscribe: (email) => request('/subscribe', { method: 'POST', body: JSON.stringify({ email }) }),
 }
 
-export function imgSrc(url, w) {
-  if (!url) return ''
-  if (!url.includes('unsplash.com')) return url
-  const clean = url.replace(/w=\d+/, `w=${w}`)
-  return clean.includes('w=') ? clean : `${url}&w=${w}`
+export function imgSrc(url) {
+  return url || ''
 }

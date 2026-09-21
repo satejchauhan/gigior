@@ -208,14 +208,43 @@ export function Footer() {
   )
 }
 
+function IconWhatsApp() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path
+        fill="currentColor"
+        d="M12.04 2C6.58 2 2.15 6.4 2.15 11.84c0 1.96.52 3.8 1.44 5.4L2 22l4.92-1.55a9.9 9.9 0 0 0 5.12 1.4h.01c5.46 0 9.89-4.4 9.89-9.85C21.94 6.4 17.5 2 12.04 2Zm5.5 13.99c-.23.64-1.33 1.17-1.84 1.24-.47.07-1.07.1-1.73-.11-.4-.12-.91-.3-1.56-.58-2.75-1.19-4.54-3.95-4.68-4.13-.13-.18-1.1-1.46-1.1-2.79 0-1.32.69-1.97.94-2.24.24-.27.53-.34.71-.34h.51c.16 0 .38-.06.59.45.23.55.77 1.89.84 2.03.07.13.11.29.02.47-.09.18-.14.29-.27.45-.14.16-.29.35-.41.47-.14.14-.28.29-.12.56.16.27.7 1.15 1.5 1.86 1.03.92 1.9 1.2 2.17 1.34.27.13.43.11.59-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.61-.13.25.09 1.58.74 1.85.88.27.13.45.2.52.31.07.11.07.64-.16 1.28Z"
+      />
+    </svg>
+  )
+}
+
+function IconPhone() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none">
+      <path
+        stroke="currentColor"
+        strokeWidth="1.35"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M8.2 4.8h2.1l1 3.2-1.4 1.1a11.4 11.4 0 0 0 5 5l1.1-1.4 3.2 1v2.1c0 .7-.5 1.3-1.2 1.4A14.6 14.6 0 0 1 4.6 6c.1-.7.7-1.2 1.4-1.2Z"
+      />
+    </svg>
+  )
+}
+
 export function StickyMobile({ phone = 'tel:+00000000000', whatsapp = 'https://wa.me/00000000000' }) {
   const { pathname } = useLocation()
   if (pathname.startsWith('/book')) return null
   return (
-    <div className="sticky-mobile">
-      <a href={whatsapp} aria-label="WhatsApp">WhatsApp</a>
-      <a href={phone} aria-label="Call">Call</a>
-      <Link to="/book">Reserve</Link>
-    </div>
+    <nav className="sticky-mobile" aria-label="Quick contact">
+      <a className="sticky-mobile__call" href={phone} aria-label="Call">
+        <IconPhone />
+        <span>Call</span>
+      </a>
+      <a className="sticky-mobile__wa" href={whatsapp} aria-label="WhatsApp">
+        <IconWhatsApp />
+      </a>
+    </nav>
   )
 }

@@ -25,8 +25,11 @@ body {
 img,
 video {
   max-width: 100%;
-  height: auto;
   display: block;
+}
+
+img {
+  height: auto;
 }
 
 h1,
