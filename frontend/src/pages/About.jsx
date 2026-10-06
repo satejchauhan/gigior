@@ -1,63 +1,107 @@
-import { useEffect, useState } from 'react'
-import { api } from '../lib/api'
-import { Btn, Picture } from '../components/Ui'
-import { Reveal } from '../components/Reveal'
+import { Link } from 'react-router-dom'
+import { Chapter } from '../components/Salon'
+import { usePageTitle } from '../lib/usePageTitle'
+import { about } from '../data/site'
+
+const blocks = [
+  {
+    id: 'about',
+    word: 'About',
+    kicker: 'About GIGIOR',
+    title: 'A house, not a corridor',
+    copy: 'GIGIOR holds hair and skin to the same standard. Daylight, a small book, and the honesty to refuse work that is not indicated. Guests come by appointment. The same practitioners are in the chair when they return.',
+    image: about.lead,
+    alt: 'The GIGIOR salon floor',
+  },
+  {
+    id: 'story',
+    word: 'Story',
+    kicker: 'Brand story',
+    title: 'Why the house opened',
+    copy: 'High-street floors mix too much noise with too little time. Clinics can feel like corridors. GIGIOR was opened so craft and clinical care could share one door: named people, a diary that stays small, and rooms that feel lived in.',
+    image: about.story,
+    alt: 'Bridal preparation in the salon',
+  },
+  {
+    id: 'meaning',
+    word: 'Name',
+    kicker: 'Meaning behind GIGIOR',
+    title: 'A name kept whole',
+    copy: 'GIGIOR is not an acronym and not a trend word. It is the name of the house — said once, and left to stand. The work underneath it is the meaning: composed, personal, and unwilling to costume a person.',
+    image: about.meaning,
+    alt: 'A finished face in daylight',
+  },
+  {
+    id: 'approach',
+    word: 'Care',
+    kicker: 'Our approach',
+    title: 'Look before we touch',
+    copy: 'Every visit begins with a conversation. Hair history, skin barrier, and the light in the room come before a formula or a device. If we would not choose the treatment for ourselves, we will not sell it.',
+    image: about.approach,
+    alt: 'A facial serum treatment',
+  },
+  {
+    id: 'vision',
+    word: 'Vision',
+    kicker: 'Vision',
+    title: 'Beauty that still looks like you',
+    copy: 'We want guests to leave looking rested and precise — not replaced. The vision is a house people return to for years, with the same faces, and a result their own friends still recognise.',
+    image: about.vision,
+    alt: 'A facial device treatment',
+  },
+  {
+    id: 'imperfect',
+    word: 'True',
+    kicker: 'Imperfectly perfect',
+    title: 'Character stays',
+    copy: 'Freckles, a cowlick, a smile line that is yours — these are not flaws to erase. Imperfectly perfect is the house rule: refine, do not overwrite. Movement stays. Texture stays. The person stays.',
+    image: about.imperfect,
+    alt: 'Makeup being finished',
+  },
+  {
+    id: 'founder',
+    word: 'House',
+    kicker: 'Founder story',
+    title: 'Opened so the two rooms would agree',
+    copy: 'The house was founded on a simple frustration: the salon and the clinic rarely spoke to each other. Colour was rushed. Skin was sold. GIGIOR was built so a hair director and an aesthetic practitioner could share one standard — consultation, consent, and the right to say no.',
+    image: about.founder,
+    alt: 'A practitioner at work',
+  },
+]
 
 export default function About() {
-  const [people, setPeople] = useState([])
-  useEffect(() => {
-    api.practitioners().then(setPeople).catch(() => {})
-  }, [])
+  usePageTitle('About')
 
   return (
-    <div>
+    <article>
       <div className="wrap page-hero">
-        <p className="eyebrow">About</p>
-        <h1 className="display">A house of salon and aesthetic</h1>
-        <p style={{ maxWidth: '52ch' }}>GIGIOR exists so hair and skin can be held to the same standard — daylight, a small book, and the honesty to refuse work that is not indicated.</p>
+        <p className="eyebrow">About us</p>
+        <h1 className="display">The house, in its own words</h1>
+        <p>Hair, skin, and the decision to keep both honest.</p>
       </div>
-      <div className="wrap two section--tight">
-        <Reveal>
-          <p className="eyebrow">The house</p>
-          <h2 className="display" style={{ fontSize: '2.6rem' }}>Why we opened</h2>
-          <p style={{ marginTop: '1rem' }}>High-street floors mix too much noise with too little time. Clinics can feel like corridors. GIGIOR is a house: two rooms, named practitioners, and a diary that stays small on purpose.</p>
-        </Reveal>
-        <figure className="editorial">
-          <Picture src="/images/about-arches.png" alt="The GIGIOR house" sizes="50vw" />
-        </figure>
-      </div>
-      <section className="section" style={{ background: 'var(--cream)' }}>
-        <div className="wrap">
-          <p className="eyebrow">The floor</p>
-          <h2 className="display" style={{ fontSize: '2.8rem', marginBottom: '1.4rem' }}>The same faces</h2>
-          <div className="card-grid">
-            {people.map((p) => (
-              <article id={p.slug} key={p.slug}>
-                <Picture src={p.image} alt={p.name} sizes="360px" />
-                <h3 className="display" style={{ fontSize: '1.8rem' }}>{p.name}</h3>
-                <p className="muted">{p.role} · {p.specialisation}<br />{p.years} years · {p.qualifications}<br />{p.register_line}</p>
-                <p>{p.bio}</p>
-              </article>
-            ))}
-          </div>
+      {blocks.map((b, i) => (
+        <Chapter
+          key={b.id}
+          id={b.id}
+          word={b.word}
+          kicker={b.kicker}
+          title={b.title}
+          media={b.image}
+          alt={b.alt}
+          flip={i % 2 === 1}
+        >
+          <p>{b.copy}</p>
+        </Chapter>
+      ))}
+      <section className="stage">
+        <div className="stage__copy">
+          <h2 className="display chapter__title">Sit. We will look before we touch.</h2>
+          <Link className="text-link" to="/book">Book appointment</Link>
+        </div>
+        <div className="stage__media photo">
+          <img src={about.story} alt="" />
         </div>
       </section>
-      <section className="section wrap two" id="technology">
-        <div>
-          <p className="eyebrow">Care</p>
-          <h2 className="display" style={{ fontSize: '2.4rem' }}>How we treat</h2>
-          <p>Skin first. Then, if indicated, a plan. We do not freeze faces or copy screenshots. Superlatives — “erases”, “permanent” — are not our language.</p>
-        </div>
-        <div id="safety">
-          <p className="eyebrow">Safety</p>
-          <h2 className="display" style={{ fontSize: '2.4rem' }}>Hygiene & technology</h2>
-          <p>Single-use consumables. Sterilisation logs. Named devices. Certified operators. A prescriber for prescription-only medicines.</p>
-        </div>
-      </section>
-      <section className="final-cta section">
-        <h2 className="display">Sit. We will look before we touch.</h2>
-        <Btn to="/book" fill light>Book appointment</Btn>
-      </section>
-    </div>
+    </article>
   )
 }

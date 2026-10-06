@@ -1,33 +1,45 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { Btn, Picture } from './Ui'
+import { Btn } from './Ui'
 import { api } from '../lib/api'
 import { useLenis } from '../lib/SmoothScroll'
 
-const SALON = [
-  ['Hair', '/salon/hair', '/images/mega-hair.png', 'Cut, colour, treatments, styling.'],
-  ['Makeup', '/salon/makeup', '/images/mega-makeup.png', 'Skin-led makeup for daylight and night.'],
-  ['Nails', '/salon/nails', '/images/mega-nails.png', 'Clean shape, quiet colour.'],
-  ['Bridal', '/salon/bridal', '/images/mega-bridal.png', 'Trials first. The day, unhurried.'],
-  ['Grooming', '/salon/grooming', '/images/mega-grooming.png', 'Cut, beard, and skin — one chair.'],
-]
-
-const AESTHETICS = [
-  ['Skin', '/aesthetics/skin', '/images/mega-skin.png', 'Rituals, pigment, and barrier work.'],
-  ['Injectables', '/aesthetics/injectables', '/images/mega-injectables.png', 'Movement softened. Character kept.'],
-  ['Laser', '/aesthetics/laser', '/images/mega-laser.png', 'Hair and tone, with named devices.'],
-  ['Hair restoration', '/aesthetics/hair-restoration', '/images/mega-restoration.png', 'Density as a plan, not a promise.'],
-  ['Body', '/aesthetics/body', '/images/mega-body.png', 'Contour and skin quality, conservatively.'],
+const SERVICES = [
+  ['Hair', '/services/hair'],
+  ['Skin', '/services/skin'],
+  ['Nails', '/services/nails'],
+  ['Mani-Pedi', '/services/mani-pedi'],
+  ['Makeup', '/services/makeup'],
+  ['Aesthetic Treatments', '/services/aesthetics'],
 ]
 
 export function Header({ nav }) {
   const [slim, setSlim] = useState(false)
   const [open, setOpen] = useState(false)
-  const [expanded, setExpanded] = useState('salon')
+  const [expanded, setExpanded] = useState('services')
+  const [intro, setIntro] = useState(true)
   const { pathname } = useLocation()
   const brand = nav?.brand || {}
   const lenis = useLenis()
+  const overlay = pathname === '/' && !slim && !open
+  const onLight = overlay || open
+
+  useEffect(() => {
+    let timer
+    let alive = true
+    const start = () => {
+      if (!alive) return
+      timer = window.setTimeout(() => setIntro(false), 2200)
+    }
+    if (document.documentElement.classList.contains('is-ready')) start()
+    else window.addEventListener('gigior:ready', start, { once: true })
+    return () => {
+      alive = false
+      window.clearTimeout(timer)
+      window.removeEventListener('gigior:ready', start)
+    }
+  }, [])
 
   useEffect(() => {
     const onScroll = () => setSlim(window.scrollY > 80)
@@ -72,24 +84,23 @@ export function Header({ nav }) {
 
   return (
     <>
-    <header className={`site-header ${slim ? 'is-slim' : ''} ${open ? 'is-open' : ''}`}>
+    <header className={`site-header ${slim ? 'is-slim' : ''} ${open ? 'is-open' : ''} ${overlay ? 'is-overlay' : ''} ${intro && overlay ? 'is-intro' : ''}`}>
       <div className="site-header__bar">
-        <Link to="/" className="brand wordmark" aria-label="GIGIOR home">
-          <strong>GIGIOR</strong>
-          <span>{brand.descriptor || 'SALON · AESTHETIC'}</span>
+        <Link to="/" className="brand" aria-label="GIGIOR salon and aesthetics, home">
+          <img src={onLight ? '/logo-mark-ink.png' : '/logo-mark.png'} alt="" width="594" height="298" />
         </Link>
 
         <nav className="nav-desktop" aria-label="Primary">
-          <HoverMega label="Salon" to="/salon" line="Colour, cut, and craft." links={SALON} />
-          <HoverMega label="Aesthetics" to="/aesthetics" line="Skin and the face, consultation first." links={AESTHETICS} />
-          <NavLink to="/results">Results</NavLink>
+          <NavLink to="/" end>Home</NavLink>
           <NavLink to="/about">About</NavLink>
-          <NavLink to="/contact">Visit</NavLink>
-          <Btn to="/book" fill>Reserve</Btn>
+          <HoverMega label="Services" to="/services" links={SERVICES} />
+          <NavLink to="/inside">Inside</NavLink>
+          <NavLink to="/contact">Contact</NavLink>
+          <Btn to="/book" fill>Book</Btn>
         </nav>
 
         <div className="header-cta">
-          <Btn to="/book" fill className="header-book-mobile">Reserve</Btn>
+          <Btn to="/book" fill className="header-book-mobile">Book</Btn>
           <button
             type="button"
             className={`nav-toggle ${open ? 'is-open' : ''}`}
@@ -111,46 +122,33 @@ export function Header({ nav }) {
           <div className="nav-mobile__scroll">
             <p className="nav-mobile__intro">Salon · Aesthetic</p>
 
-            <div className={`nav-mobile__acc ${expanded === 'salon' ? 'is-open' : ''}`}>
-              <button type="button" className="nav-mobile__acc-btn" aria-expanded={expanded === 'salon'} onClick={() => toggleSection('salon')}>
-                <span>Salon</span>
-                <em aria-hidden="true" />
-              </button>
-              <div className="nav-mobile__acc-panel">
-                <Link to="/salon">Overview</Link>
-                {SALON.map(([label, to]) => (
-                  <Link key={to} to={to}>{label}</Link>
-                ))}
-              </div>
-            </div>
+            <nav className="nav-mobile__primary" aria-label="Primary">
+              <Link to="/">Home</Link>
+              <Link to="/about">About Us</Link>
+            </nav>
 
-            <div className={`nav-mobile__acc ${expanded === 'aesthetics' ? 'is-open' : ''}`}>
-              <button type="button" className="nav-mobile__acc-btn" aria-expanded={expanded === 'aesthetics'} onClick={() => toggleSection('aesthetics')}>
-                <span>Aesthetics</span>
+            <div className={`nav-mobile__acc ${expanded === 'services' ? 'is-open' : ''}`}>
+              <button type="button" className="nav-mobile__acc-btn" aria-expanded={expanded === 'services'} onClick={() => toggleSection('services')}>
+                <span>Services</span>
                 <em aria-hidden="true" />
               </button>
               <div className="nav-mobile__acc-panel">
-                <Link to="/aesthetics">Overview</Link>
-                {AESTHETICS.map(([label, to]) => (
+                <Link to="/services">Overview</Link>
+                {SERVICES.map(([label, to]) => (
                   <Link key={to} to={to}>{label}</Link>
                 ))}
               </div>
             </div>
 
             <nav className="nav-mobile__primary" aria-label="More">
-              <Link to="/finder">Treatment finder</Link>
-              <Link to="/results">Results</Link>
-              <Link to="/about">About</Link>
-              <Link to="/membership">Membership</Link>
-              <Link to="/locations">Locations</Link>
-              <Link to="/journal">Journal</Link>
-              <Link to="/faq">FAQs</Link>
-              <Link to="/contact">Visit</Link>
+              <Link to="/inside">Inside GIGIOR</Link>
+              <Link to="/contact">Contact Us</Link>
+              <Link to="/#faqs">FAQs</Link>
             </nav>
           </div>
 
           <div className="nav-mobile__bar">
-            <Btn to="/book" fill>Reserve</Btn>
+            <Btn to="/book" fill>Book appointment</Btn>
             <a className="nav-mobile__call" href={`tel:${(brand.phone || '+00000000000').replace(/\s+/g, '')}`}>Call</a>
           </div>
         </div>,
@@ -160,43 +158,25 @@ export function Header({ nav }) {
   )
 }
 
-function HoverMega({ label, to, line, links }) {
-  const [active, setActive] = useState(0)
-  const current = links[active] || links[0]
-
+function HoverMega({ label, to, links }) {
   return (
-    <div className="mega" onMouseLeave={() => setActive(0)}>
+    <div className="mega mega--text">
       <NavLink to={to}>{label}</NavLink>
       <div className="mega__panel" role="region" aria-label={`${label} menu`}>
-        <Link to={current[1]} className="mega__feature">
-          <Picture src={current[2]} alt={current[0]} sizes="280px" />
-          <div className="mega__feature-copy">
-            <p className="eyebrow">{label}</p>
-            <h3>{current[0]}</h3>
-            <p>{current[3] || line}</p>
-          </div>
-        </Link>
         <ul className="mega__links">
-          {links.map(([name, href], i) => (
+          <li><Link to={to}>All services</Link></li>
+          {links.map(([name, href]) => (
             <li key={href}>
-              <Link
-                to={href}
-                className={i === active ? 'is-on' : ''}
-                onMouseEnter={() => setActive(i)}
-                onFocus={() => setActive(i)}
-              >
-                {name}
-              </Link>
+              <Link to={href}>{name}</Link>
             </li>
           ))}
-          <li><Link to="/finder">Not sure — find a treatment</Link></li>
         </ul>
       </div>
     </div>
   )
 }
 
-export function Footer() {
+export function Footer({ brand = {} }) {
   const [note, setNote] = useState('')
 
   async function onSubmit(e) {
@@ -211,39 +191,56 @@ export function Footer() {
     }
   }
 
+  const instagram = brand.instagram || 'https://instagram.com/gigior'
+  const whatsapp = brand.whatsapp
+    ? `https://wa.me/${String(brand.whatsapp).replace(/\D/g, '')}`
+    : 'https://wa.me/000000000000'
+  const facebook = brand.facebook || 'https://facebook.com/gigior'
+  const youtube = brand.youtube || 'https://youtube.com/@gigior'
+
   return (
     <footer className="site-footer">
       <div className="wrap">
         <div className="footer-grid">
           <div>
-            <p className="wordmark footer-mark">GIGIOR</p>
-            <p className="eyebrow">Salon · Aesthetic</p>
+            <img className="footer-logo" src="/logo-mark.png" alt="GIGIOR Salon & Aesthetics" width="594" height="298" />
             <p className="footer-line">Letters from the house. Rarely, and never loudly.</p>
             <form className="subscribe" onSubmit={onSubmit}>
               <input type="email" name="email" required placeholder="Email address" aria-label="Email address" autoComplete="email" />
               <button type="submit">Subscribe</button>
             </form>
             {note && <p className="footer-note">{note}</p>}
+            <nav className="footer-social" aria-label="Social media">
+              <a href={instagram} target="_blank" rel="noreferrer" aria-label="Instagram">
+                <IconInstagram />
+              </a>
+              <a href={whatsapp} target="_blank" rel="noreferrer" aria-label="WhatsApp">
+                <IconWhatsApp />
+              </a>
+              <a href={facebook} target="_blank" rel="noreferrer" aria-label="Facebook">
+                <IconFacebook />
+              </a>
+              <a href={youtube} target="_blank" rel="noreferrer" aria-label="YouTube">
+                <IconYouTube />
+              </a>
+            </nav>
           </div>
           <div>
-            <p className="eyebrow">Rooms</p>
+            <p className="eyebrow">Services</p>
             <ul>
-              <li><Link to="/salon">Salon</Link></li>
-              <li><Link to="/aesthetics">Aesthetics</Link></li>
-              <li><Link to="/finder">Treatment finder</Link></li>
-              <li><Link to="/results">Results</Link></li>
-              <li><Link to="/membership">Membership</Link></li>
+              {SERVICES.map(([label, to]) => (
+                <li key={to}><Link to={to}>{label}</Link></li>
+              ))}
             </ul>
           </div>
           <div>
             <p className="eyebrow">House</p>
             <ul>
-              <li><Link to="/about">About</Link></li>
-              <li><Link to="/locations">Locations</Link></li>
-              <li><Link to="/journal">Journal</Link></li>
-              <li><Link to="/faq">FAQs</Link></li>
-              <li><Link to="/contact">Contact</Link></li>
-              <li><Link to="/book">Reserve</Link></li>
+              <li><Link to="/about">About Us</Link></li>
+              <li><Link to="/inside">Inside GIGIOR</Link></li>
+              <li><Link to="/contact">Contact Us</Link></li>
+              <li><Link to="/#faqs">FAQs</Link></li>
+              <li><Link to="/book">Book appointment</Link></li>
             </ul>
           </div>
           <div>
@@ -262,6 +259,36 @@ export function Footer() {
         </div>
       </div>
     </footer>
+  )
+}
+
+function IconInstagram() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none">
+      <rect x="3.5" y="3.5" width="17" height="17" rx="4" stroke="currentColor" strokeWidth="1.4" />
+      <circle cx="12" cy="12" r="3.6" stroke="currentColor" strokeWidth="1.4" />
+      <circle cx="17.2" cy="6.8" r="0.9" fill="currentColor" />
+    </svg>
+  )
+}
+
+function IconFacebook() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path
+        fill="currentColor"
+        d="M14.5 8.25H16.2V5.6h-1.7c-2.05 0-3.45 1.25-3.45 3.35v1.55H9.3V13.2h1.75V19h3.1v-5.8h2.15l.45-2.7h-2.6V9.15c0-.55.28-.9.85-.9Z"
+      />
+    </svg>
+  )
+}
+
+function IconYouTube() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none">
+      <rect x="2.8" y="6.2" width="18.4" height="11.6" rx="2.4" stroke="currentColor" strokeWidth="1.4" />
+      <path fill="currentColor" d="M10.4 9.4v5.2L15.2 12l-4.8-2.6Z" />
+    </svg>
   )
 }
 

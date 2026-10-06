@@ -1,0 +1,19 @@
+Photography credit
+==================
+Photographs in this folder are real stock photos from Unsplash
+(https://unsplash.com) and Pexels (https://www.pexels.com), used under
+the Unsplash License (https://unsplash.com/license) and the Pexels
+License (https://www.pexels.com/license/).
+
+Subjects include beauty, salon, portrait, and wellness photography.
+No AI-generated images are used in this folder.
+
+Team portraits (Pexels):
+- team-hair.jpg — cottonbro studio, photo 3993470
+- team-makeup.jpg — Alexander Mass, photo 29588105
+- team-spa.jpg — Anna Shvets, photo 5069437
+- team-massage.jpg — Anna Tarazevich, photo 6560304
+- room-cut.jpg — cottonbro studio, photo 3993445
+- room-colour.jpg — photo 3065207
+- room-treat.jpg — cottonbro studio, photo 3993449
+- room-style.jpg — photo 8467969

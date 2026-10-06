@@ -23,6 +23,8 @@ final class Seed
             'whatsapp' => '+000000000000',
             'email' => 'house@gigior.local',
             'instagram' => 'https://instagram.com/gigior',
+            'facebook' => 'https://facebook.com/gigior',
+            'youtube' => 'https://youtube.com/@gigior',
             'rating' => '4.9',
             'review_count' => '320',
             'years' => '8',
@@ -78,7 +80,7 @@ final class Seed
 
         $people = [
             ['anya-mehta', 'Anya Mehta', 'Hair director', 'Cut, colour, bridal', 'Senior colour & form', 14, 'Anya holds the hair book. Lived-in colour, geometry, and bridal trials.', $img('p-anya'), null],
-            ['rahul-sen', 'Rahul Sen', 'Colourist', 'GIGIOR colour, correction', 'Advanced colour', 9, 'Rahul mixes in daylight. Corrective work is quoted, never rushed.', $img('p-rahul'), null],
+            ['riya-sen', 'Riya Sen', 'Colourist', 'GIGIOR colour, correction', 'Advanced colour', 9, 'Riya mixes in daylight. Corrective work is quoted, never rushed.', $img('p-riya'), null],
             ['leila-rahman', 'Dr Leila Rahman', 'Aesthetic practitioner', 'Skin quality, injectables', 'Medical aesthetics', 11, 'Consultation-led facial work. Conservative. Named prescriber where required.', $img('p-leila'), 'Prescriber on the register — number confirmed in the rooms.'],
             ['mira-kapoor', 'Mira Kapoor', 'Skin therapist', 'Rituals, acne, barrier', 'Skin analysis', 8, 'Mira reads the barrier before any device or peel is discussed.', $img('p-mira'), null],
         ];

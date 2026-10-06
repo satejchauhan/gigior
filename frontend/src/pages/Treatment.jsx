@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { api } from '../lib/api'
-import { Btn, Picture } from '../components/Ui'
+import { Btn } from '../components/Ui'
 
 export default function Treatment() {
   const { pillar, category, slug } = useParams()
@@ -23,7 +23,7 @@ export default function Treatment() {
   return (
     <article className="wrap page-hero">
       <p className="breadcrumbs">
-        <Link to="/">Home</Link> / <Link to={`/${pillar}`}>{pillar}</Link> / <Link to={`/${pillar}/${category}`}>{category}</Link> / {s.name}
+        <Link to="/">Home</Link> / <Link to="/services">Services</Link> / <Link to={`/services/${category === 'injectables' || category === 'laser' || category === 'hair-restoration' || category === 'body' ? 'aesthetics' : category === 'bridal' ? 'makeup' : category}`}>{category}</Link> / {s.name}
       </p>
       <div className="two">
         <div>
@@ -32,10 +32,9 @@ export default function Treatment() {
           <p>{s.benefit}</p>
           <div className="btn-row" style={{ marginTop: '1.2rem' }}>
             <Btn to={bookTo} fill>{consult ? 'Book a consultation' : 'Book appointment'}</Btn>
-            <Btn to="/finder">Not sure?</Btn>
+            <Btn to="/services">All services</Btn>
           </div>
         </div>
-        <Picture src={s.image} alt={s.name} sizes="50vw" />
       </div>
 
       <section className="section--tight">
@@ -67,23 +66,6 @@ export default function Treatment() {
         <p style={{ maxWidth: '60ch' }}>{extra.results}</p>
       </section>
 
-      {data.results?.length > 0 && (
-        <section className="section--tight">
-          <p className="eyebrow">Before & after</p>
-          <div className="ba-grid">
-            {data.results.map((r) => (
-              <article className="ba" key={r.id}>
-                <div className="ba__pair">
-                  <Picture src={r.before_image} alt="" sizes="200px" />
-                  <Picture src={r.after_image} alt="" sizes="200px" />
-                </div>
-                <p className="muted">{r.timeline} · {r.guest_label}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
-
       <section className="section--tight facts">
         <div><p className="eyebrow">Duration</p><p>{s.duration_label}</p></div>
         <div><p className="eyebrow">Investment</p><p>{s.price_label}</p></div>
@@ -100,7 +82,6 @@ export default function Treatment() {
         <div className="h-scroll">
           {data.practitioners.map((p) => (
             <article key={p.slug}>
-              <Picture src={p.image} alt={p.name} sizes="220px" />
               <h3 className="display" style={{ fontSize: '1.6rem' }}>{p.name}</h3>
               <p className="muted">{p.role}<br />{p.register_line}</p>
             </article>
@@ -120,7 +101,6 @@ export default function Treatment() {
         <div className="card-grid">
           {data.related.map((r) => (
             <Link key={r.slug} to={`/${r.pillar}/${r.category}/${r.slug}`}>
-              <Picture src={r.image} alt="" sizes="300px" />
               <h3 className="display" style={{ fontSize: '1.6rem' }}>{r.name}</h3>
             </Link>
           ))}
@@ -129,7 +109,7 @@ export default function Treatment() {
 
       <section className="final-cta section">
         <h2 className="display">{consult ? 'Confirm fit in a consultation.' : 'Reserve this in the book.'}</h2>
-        <Btn to={bookTo} fill light>{consult ? 'Book a consultation' : 'Book appointment'}</Btn>
+        <Btn to={bookTo} fill>{consult ? 'Book a consultation' : 'Book appointment'}</Btn>
       </section>
     </article>
   )
